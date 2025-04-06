@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flood Prediction</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <h2>Flood Prediction Form</h2>
+    <form id="predictForm">
+        <div id="fields"></div>
+        <button type="submit">Predict</button>
+    </form>
+    <h3>Prediction: <span id="result"></span></h3>
+
+    <script>
+        const features = [
+            'MonsoonIntensity', 'TopographyDrainage', 'RiverManagement',
+            'Deforestation', 'Urbanization', 'ClimateChange', 'DamsQuality',
+            'Siltation', 'AgriculturalPractices', 'Encroachments',
+            'IneffectiveDisasterPreparedness', 'DrainageSystems',
+            'CoastalVulnerability', 'Landslides', 'Watersheds',
+            'DeterioratingInfrastructure', 'PopulationScore', 'WetlandLoss',
+            'InadequatePlanning', 'PoliticalFactors'
+        ];
+
+        const formDiv = document.getElementById("fields");
+        features.forEach(feature => {
+            formDiv.innerHTML += `
+                <label>${feature}: <input type="number" step="any" name="${feature}" required></label><br><br>
+            `;
+        });
+
+        document.getElementById("predictForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch("http://127.0.0.1:8000/predict", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById("result").textContent = result.prediction;
+        });
+    </script>
+</body>
+</html>
